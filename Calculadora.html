@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Média</title>
+    <style>
+        body {
+            margin: 0;
+            padding:0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+            background-color: #E7E7E7;
+            padding-top: 100px;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        header img {
+            height: 36px;
+            margin-right: 16px;
+        }
+        header h1 {
+            font-size: 40px;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 960px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        form {
+            display: flex;
+            max-width: 640px;
+            width: 100%;
+            justify-content: space-between;
+            margin-bottom: 56px;
+        }
+        form input {
+            font-size: 24px;
+            background-color: #fff;
+            border: none;
+            border-bottom: 2px solid #000;
+            padding: 8px;
+        }
+        form button {
+            background-color: #009432;
+            color: #fff;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+        }
+        table th {
+            border-bottom: 2px solid #000;
+            padding: 16px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        table td{
+            padding: 16px 0;
+            text-align: center;
+            font-size: 18px;
+            border: 1px solid rgba(0, 0, 0, 0.1 );
+        }
+        table td img {
+            height: 30px;
+        }
+        .resultado {
+            padding: 8px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #000;
+            border-radius: 3px;
+        }
+        .aprovado{
+            background-color: #009432;
+        }
+        .reprovado {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <header>
+        <img src="IMG/chapéu-graduação.png" width="40" height="40" alt="Capelo e Diploma"> 
+        <h1>Calculadora de médias</h1> 
+    </header>
+    <form id="form-atividade">
+        <input type="text" id="nome-atividade" required placeholder="Nome da atividade" />
+        <input type="number" id="nota-atividade" required placeholder="Nota da atividade" min="0" max="10"/>
+        <button type="submit">Adicionar +</button>
+    </form>
+    <table cellspacing="0">
+        <thead>
+            <tr>
+                <th>Nome da Atividade</th>
+                <th>Nota da Atividade</th>
+                <th>Aprovado?</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>Média final</td>
+                <td id="media-final-valor">---</td>
+                <td id="media-final-resultado">---</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<script>
+const form = document.getElementById('form-atividade');
+const imgAprovado = '<img src="./IMG/festejando.png" alt="Emoji celebrando" />'
+const imgReprovado = '<img src="./IMG/triste.png" alt="Emoji triste" />'
+const atividades = [];
+const notas = [];
+const spanAprovado = '<span class="Resultado aprovado">Aprovado</span>'
+const spanReprovado = '<span class="Resultado reprovado">Reprovado</span>'
+const notaMinima = parseFloat(prompt ("Digite a nota mínima:"));
+
+let linhas = '';
+
+form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        adicionaLinha();
+        atualizaTabela();
+        atualizaMediaFinal();
+});
+
+function adicionaLinha() {
+    const inputNomeAtividade = document.getElementById('nome-atividade');
+        const inputNotaAtividade = document.getElementById('nota-atividade');
+
+        if (atividades.includes(inputNomeAtividade.value)){
+            alert (`A atividade: ${inputNomeAtividade.value} já foi inserida`);
+        } else{
+        atividades.push(inputNomeAtividade.value);
+        notas.push(parseFloat(inputNotaAtividade.value));
+        
+        let linha = '<tr>';
+            linha += `<td>${inputNomeAtividade.value}</td>`;
+            linha += `<td>${inputNotaAtividade.value}</td>`;
+            linha += `<td>${inputNotaAtividade.value >= notaMinima ? imgAprovado : imgReprovado}</td>`;
+            linha += '</tr>';
+
+            linhas += linha;
+        }
+
+            const corpoTabela = document.querySelector('tbody');
+            corpoTabela.innerHTML = linhas;
+
+            inputNomeAtividade.value = '';
+            inputNotaAtividade.value = '';
+}
+
+function atualizaTabela() {
+    const corpoTabela = document.querySelector('tbody');
+    corpoTabela.innerHTML = linhas; 
+}
+function atualizaMediaFinal() {
+    const mediaFinal = calculaMediaFinal();
+
+    document.getElementById('media-final-valor').innerHTML = mediaFinal;
+    document.getElementById('media-final-resultado').innerHTML = mediaFinal >= notaMinima ? spanAprovado : spanReprovado;
+}
+
+function calculaMediaFinal() {
+    let somaDasNotas = 0;
+
+    for (let i = 0; i < notas.length; i++){
+        somaDasNotas += notas [i];
+    }
+
+    return somaDasNotas / notas.length;      
+
+}
+</script>
+</body>
+</html>
